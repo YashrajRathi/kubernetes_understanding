@@ -12,7 +12,7 @@ metadata:
 spec:
   containers:
   - command:
-    - kube-apiserver
+    - /home/kube-apiserver
     - --advertise-address=172.19.0.2
     - --allow-privileged=true
     - --authorization-mode=Node,RBAC
@@ -77,6 +77,8 @@ spec:
       periodSeconds: 10
       timeoutSeconds: 15
     volumeMounts:
+    - mountPath: /home/
+      name: apiserver-server-vol
     - mountPath: /etc/ssl/certs
       name: ca-certs
       readOnly: true
@@ -99,6 +101,10 @@ spec:
     seccompProfile:
       type: RuntimeDefault
   volumes:
+  - hostPath:
+      path: /home/kube_binaries/kube-apiserver
+      type: ""
+    name: apiserver-server-vol
   - hostPath:
       path: /etc/ssl/certs
       type: DirectoryOrCreate
