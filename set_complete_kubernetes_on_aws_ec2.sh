@@ -19,5 +19,5 @@ systemctl restart containerd  ;
 this_ec2_ip_address=$(ip route show default | grep "[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+" -o | tail -n 1) ;
 kubeadm init --apiserver-advertise-address $this_ec2_ip_address --pod-network-cidr=10.244.0.0/16 ;
 export KUBECONFIG=/etc/kubernetes/admin.conf  ;
-curl https://raw.githubusercontent.com/projectcalico/calico/v3.30.2/manifests/canal.yaml -O ;
-kubectl apply -f canal.yaml;
+# curl https://raw.githubusercontent.com/projectcalico/calico/v3.30.2/manifests/canal.yaml -O ;
+# kubectl apply -f canal.yaml;
