@@ -17,7 +17,9 @@ sed -i "s/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/g" copy_sysctl.conf ;
 sudo sysctl -w net.ipv4.ip_forward=1 ;
 systemctl restart containerd  ;
 this_ec2_ip_address=$(ip route show default | grep "[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+" -o | tail -n 1) ;
-kubeadm init --apiserver-advertise-address $this_ec2_ip_address --pod-network-cidr=10.244.0.0/16 ;
+AWS_TOKEN=`curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 60"`
+public_hostname=$(curl -H "X-aws-ec2-metadata-token: $AWS_TOKEN" http://169.254.169.254/latest/meta-data/public-hostname)
+kubeadm init --apiserver-cert-extra-sans "$public_hostname" --apiserver-advertise-address $this_ec2_ip_address --pod-network-cidr=10.244.0.0/16 ;
 export KUBECONFIG=/etc/kubernetes/admin.conf  ;
 curl https://raw.githubusercontent.com/projectcalico/calico/v3.30.2/manifests/canal.yaml -O ;
 kubectl apply -f canal.yaml;
